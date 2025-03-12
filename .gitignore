@@ -1,5 +1,6 @@
 models/
 data/
 .venv/
-src/grpo_robots/__pycache__/
+**/__pycache__/
 wandb/
+src/grpo_robots/__pycache__/
