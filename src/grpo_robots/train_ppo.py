@@ -10,6 +10,10 @@ from tqdm import tqdm
 import gymnasium as gym
 import h5py
 
+# Set device
+device = jax.devices("gpu")[0] if jax.devices("gpu") else jax.devices("cpu")[0]
+print(f"Using device: {device}")
+
 # Import modules
 from grpo_robots.evaluation import evaluate, EpisodeMonitor
 from grpo_robots.ppo_learner import PPOAgent
@@ -24,8 +28,8 @@ flags.DEFINE_integer('eval_episodes', 10, 'Number of episodes for evaluation')
 flags.DEFINE_float('actor_lr', 3e-4, 'Learning rate for actor network')
 flags.DEFINE_float('critic_lr', 1e-3, 'Learning rate for critic network')
 flags.DEFINE_float('bc_lr', 3e-4, 'Learning rate for BC initialization')
-flags.DEFINE_integer('batch_size', 64, 'Batch size for updating')
-flags.DEFINE_integer('rollout_length', 2048, 'Number of steps to collect per iteration')
+flags.DEFINE_integer('batch_size', 1024, 'Batch size for updating')
+flags.DEFINE_integer('rollout_length', 8192, 'Number of steps to collect per iteration')
 flags.DEFINE_integer('num_iterations', 100, 'Number of training iterations')
 flags.DEFINE_integer('num_epochs', 10, 'Number of epochs to update on the same data')
 flags.DEFINE_integer('log_interval', 1, 'Logging interval (iterations)')
@@ -67,7 +71,7 @@ def load_hdf5_demonstrations(file_path):
         }
         return data
 
-def train_with_bc(observation_dim, action_dim, demo_data, seed, bc_steps=2000, state_dependent_std=True, learning_rate=3e-4, batch_size=256, use_wandb=False, wandb=None, global_step=0):
+def train_with_bc(observation_dim, action_dim, demo_data, seed, bc_steps=2000, state_dependent_std=True, learning_rate=3e-4, batch_size=1024, use_wandb=False, wandb=None, global_step=0):
     """Train a policy with Behavioral Cloning."""
     print(f"Starting BC initialization for {bc_steps} steps")
 

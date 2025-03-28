@@ -9,6 +9,10 @@ from absl import app, flags
 from tqdm import tqdm
 import h5py
 
+# Set device
+device = jax.devices("gpu")[0] if jax.devices("gpu") else jax.devices("cpu")[0]
+print(f"Using device: {device}")
+
 # Import your modules
 from grpo_robots.evaluation import evaluate
 from grpo_robots.bc_learner import BCAgent

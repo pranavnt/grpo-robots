@@ -17,6 +17,10 @@ from tqdm import tqdm
 import gymnasium as gym
 import h5py
 
+# Set device
+device = jax.devices("gpu")[0] if jax.devices("gpu") else jax.devices("cpu")[0]
+print(f"Using device: {device}")
+
 # Import modules
 from grpo_robots.evaluation import evaluate, EpisodeMonitor
 from grpo_robots.grpo_learner import GRPOAgent
